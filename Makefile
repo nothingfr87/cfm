@@ -5,6 +5,10 @@ BIN = cfm
 
 all: clean build
 
+install: build
+	chmod 777 $(BIN)
+	sudo mv $(BIN) /usr/local/bin/
+
 build:
 	$(CC) -o $(BIN) $(FILES) $(CFLAGS)
 
