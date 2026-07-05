@@ -91,15 +91,27 @@ CFM Supports:
 
 ---
 
+## Issues:
+
+Please consider reporting in [Issues](https://github.com/nothingfr87/cfm/issues) if you faced any problems, to help this project get better and better
+
+---
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE)
 
 ---
 
-Quick Note:
+### Other Projects:
 
-Lightweight, Fast, and Practical -> CFM
+If you don't like CFM, I am sorry I'll try to make it better!
+
+But for now here some other projects that you would like, these projects inspired me to make this!
+
+- [Yazi](https://yazi-rs.github.io/)
+- [NNN](https://github.com/jarun/nnn)
+- [Ranger](https://github.com/ranger/ranger)
 
 ---
 
