@@ -23,10 +23,16 @@ CFM is a simple TUI file manager fully written in C focusing on performance, and
 
 And just like any file manager:
 
-- Open Files
-- Open Folders
+- Open Files/Folders
+- Create Files/Folders
+- Delete Files/Folders
 
-CFM Unfortunately lacks deleting, creating files or folders :\ , the good news is that CFM is still under development so updates and improvements are coming!
+- Focused on keyboard keybinds which makes it faster to use
+    - q/Escape: Exit
+    - a: Create a new file/folder
+    - d: Delete a file/folder
+    - Left Arrow/Enter: Enter a folder or open a file
+    - Right Arrow: Go back
 
 ---
 
@@ -88,6 +94,12 @@ CFM Supports:
 ## License
 
 This project is licensed under the [MIT License](LICENSE)
+
+---
+
+Quick Note:
+
+Lightweight, Fast, and Practical -> CFM
 
 ---
 
