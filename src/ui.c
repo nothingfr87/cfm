@@ -27,8 +27,6 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
   use_default_colors();
   init_pair(DIR_COLOR, COLOR_BLUE, -1);
 
-  char status_bar[256];
-
   while (1) {
     clear();
     for (int i = 0; i < count; i++) {
