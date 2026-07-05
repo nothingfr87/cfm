@@ -113,7 +113,7 @@ void create_folder_file(char *items[], int selected, int *count) {
 }
 
 void delfile(char *items[], int selected, int *count, int ch) {
-  status_message("Processed? [y/n]");
+  mvprintw(STATUS_CORDS, 0, "Processed? [y/n]");
   ch = getch();
 
   if (ch == 'y') {
