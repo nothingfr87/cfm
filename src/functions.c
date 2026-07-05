@@ -1,5 +1,8 @@
 #include "functions.h"
 #include <dirent.h>
+#include <ncurses.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +10,25 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 512
+#define STATUS_CORDS LINES - 2
+
+void status_message(const char *message, ...) {
+  va_list args;
+
+  move(STATUS_CORDS, 0);
+  clrtoeol();
+
+  va_start(args, message);
+  vw_printw(stdscr, message, args);
+  va_end(args);
+
+  refresh();
+  napms(2000);
+
+  move(STATUS_CORDS, 0);
+  clrtoeol();
+  refresh();
+}
 
 int is_text_file(const char *filename) {
   FILE *file = fopen(filename, "rb");
@@ -30,22 +52,105 @@ int is_text_file(const char *filename) {
   return 1;
 }
 
+bool file_exists(const char *filename) {
+  FILE *fp = fopen(filename, "r");
+  bool is_exist = false;
+  if (fp != NULL) {
+    is_exist = true;
+    fclose(fp);
+  }
+  return is_exist;
+}
+
+void create_folder_file(char *items[], int selected, int *count) {
+  FILE *temp_file = NULL;
+  char filename[BUFFER_SIZE];
+
+  mvprintw(STATUS_CORDS, 0, "Filename (end with '/' for folder): ");
+  getnstr(filename, sizeof(filename));
+
+  size_t len = strlen(filename);
+  if (len > 0 && filename[len - 1] == '/') {
+    struct stat st = {0};
+    if (stat(filename, &st) == -1) {
+      status_message("Created folder %s", filename);
+      filename[len - 1] = '\0';
+      mkdir(filename, 0700);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
+      if (selected >= *count) {
+        selected = *count - 1;
+      }
+      if (selected < 0) {
+        selected = 0;
+      }
+
+    } else {
+      status_message("Folder %s already exists", filename);
+    }
+  } else {
+    if (file_exists(filename)) {
+      status_message("File %s already exists", filename);
+      if (temp_file)
+        fclose(temp_file);
+      return;
+    }
+    temp_file = fopen(filename, "a");
+
+    if (temp_file) {
+      status_message("Created %s", filename);
+      fclose(temp_file);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
+      if (selected >= *count) {
+        selected = *count - 1;
+      }
+      if (selected < 0) {
+        selected = 0;
+      }
+    }
+  }
+}
+
+void delfile(char *items[], int selected, int *count, int ch) {
+  status_message("Processed? [y/n]");
+  ch = getch();
+
+  if (ch == 'y') {
+    if (remove(items[selected]) == 0) {
+      status_message("Deleted %s", items[selected]);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
+      if (selected >= *count) {
+        selected = *count - 1;
+      }
+      if (selected < 0) {
+        selected = 0;
+      }
+    } else {
+      status_message("Failed to Delete %s", items[selected]);
+    }
+  } else {
+    status_message("Abort");
+  }
+}
+
 void open_file(const char *filename) {
-  char command[512];
+  char command[BUFFER_SIZE];
 
 #if defined(_WIN32) || defined(_WIN64)
-  snprintf(command, sizeof(command), "start \"\" \"%s\" > nul 2>&1", filename);
+  snprintf(command, BUFFER_SIZE, "start \"\" \"%s\" > nul 2>&1", filename);
   system(command);
 
 #elif defined(__APPLE__)
-  snprintf(command, sizeof(command), "open \"%s\" > /dev/null 2>&1", filename);
+  snprintf(command, BUFFER_SIZE, "open \"%s\" > /dev/null 2>&1", filename);
   system(command);
 
 #elif defined(__linux__)
   if (is_text_file(filename)) {
-    snprintf(command, sizeof(command), "nano \"%s\"", filename);
+    snprintf(command, BUFFER_SIZE, "nano \"%s\"", filename);
   } else {
-    snprintf(command, sizeof(command), "xdg-open \"%s\" > /dev/null 2>&1",
+    snprintf(command, BUFFER_SIZE, "xdg-open \"%s\" > /dev/null 2>&1",
              filename);
   }
   system(command);

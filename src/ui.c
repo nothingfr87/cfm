@@ -4,15 +4,17 @@
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define DIR_COLOR 1
 
 void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
   initscr();
-  noecho();
+  echo();
   cbreak();
   curs_set(0);
-  timeout(10);
+  timeout(-1);
   keypad(stdscr, TRUE);
 
   if (has_colors() == FALSE) {
@@ -47,17 +49,19 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
     refresh();
 
     ch = getch();
-
     switch (ch) {
     case KEY_UP:
       if (selected > 0)
         selected--;
       break;
+
     case KEY_DOWN:
       if (selected < count - 1)
         selected++;
       break;
+
     case '\n':
+    case KEY_RIGHT:
       if (isDir(items[selected])) {
         if (changedirectory(items, selected, &count))
           selected = 0;
@@ -65,10 +69,20 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
         open_file(items[selected]);
       }
       break;
+
     case KEY_LEFT:
       if (goback(items, selected, &count))
         selected = 0;
       break;
+
+    case 'a':
+      create_folder_file(items, selected, &count);
+      break;
+
+    case 'd':
+      delfile(items, selected, &count, ch);
+      break;
+
     case 'q':
     case 27:
       goto end;
