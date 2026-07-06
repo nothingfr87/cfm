@@ -112,6 +112,25 @@ void create_folder_file(char *items[], int selected, int *count) {
   }
 }
 
+void rename_file(char *items[], int selected, int *count) {
+  char filename[256];
+  mvprintw(LINES - 2, 0, "New Name: ");
+  getnstr(filename, sizeof(filename));
+  if (rename(items[selected], filename)) {
+    status_message("Renamed %s to %s", items[selected], filename);
+    freeitems(items, *count);
+    *count = loaddirectory(".", items);
+    if (selected >= *count) {
+      selected = *count - 1;
+    }
+    if (selected < 0) {
+      selected = 0;
+    }
+  } else {
+    status_message("Failed to rename %s", items[selected]);
+  }
+}
+
 void delfile(char *items[], int selected, int *count, int ch) {
   mvprintw(STATUS_CORDS, 0, "Processed? [y/n]");
   ch = getch();

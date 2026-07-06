@@ -77,6 +77,10 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
       create_folder_file(items, selected, &count);
       break;
 
+    case 'r':
+      rename_file(items, selected, &count);
+      break;
+
     case 'd':
       delfile(items, selected, &count, ch);
       break;
