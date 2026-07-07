@@ -74,18 +74,32 @@ void rename_file(char *items[], int selected, int *count) {
   }
 }
 
+static int rmrf(const char *path) {
+  struct stat st;
+  if (lstat(path, &st) != 0) return -1;
+  if (!S_ISDIR(st.st_mode)) return remove(path);
+  DIR *d = opendir(path);
+  if (!d) return -1;
+  struct dirent *entry;
+  char fullpath[BUFFER_SIZE];
+  while ((entry = readdir(d)) != NULL) {
+    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)continue;
+    snprintf(fullpath, sizeof(fullpath), "%s/%s", path, entry->d_name);
+    rmrf(fullpath);
+  }
+  closedir(d);
+  return remove(path);
+}
+
 // Deleting file/folder
 void delfile(char *items[], int selected, int *count, int ch) {
   mvprintw(STATUS_CORDS, 0, "Processed? [y/n]");
-  ch = getch(); // take the user input for a character
-
-  if (ch == 'y') { // if y (yes)
-    if (remove(items[selected]) ==
-        0) { // check if the rename function was done properly
-      status_message("Deleted %s", items[selected]); // show success message
-      freeitems(items, *count);                      // free old items
-      *count = loaddirectory(
-          ".", items); // load new direcotry and allocate new items
+  ch = getch();
+  if (ch == 'y') {
+    if (rmrf(items[selected]) == 0) {
+      status_message("Deleted %s", items[selected]);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
       if (selected >= *count) {
         selected = *count - 1;
       }
@@ -93,11 +107,10 @@ void delfile(char *items[], int selected, int *count, int ch) {
         selected = 0;
       }
     } else {
-      status_message("Failed to Delete %s",
-                     items[selected]); // show fail message
+      status_message("Failed to Delete %s", items[selected]);
     }
   } else {
-    status_message("Abort"); // if the user pressed any key except for y/n
+    status_message("Abort");
   }
 }
 

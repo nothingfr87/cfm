@@ -100,6 +100,23 @@ void topbar() {
   }
 }
 
+static int mkdir_p(const char *path, mode_t mode) {
+  char tmp[BUFFER_SIZE];
+  char *p;
+  size_t len;
+  snprintf(tmp, sizeof(tmp), "%s", path);
+  len = strlen(tmp);
+  if (len > 0 && tmp[len - 1] == '/') tmp[len - 1] = '\0';
+  for (p = tmp + 1; *p; p++) {
+    if (*p == '/') {
+      *p = '\0';
+      mkdir(tmp, mode);
+      *p = '/';
+    }
+  }
+  return mkdir(tmp, mode);
+}
+
 // Creating new folder/file
 void create_folder_file(char *items[], int selected, int *count) {
   FILE *temp_file = NULL;
@@ -111,26 +128,20 @@ void create_folder_file(char *items[], int selected, int *count) {
       sizeof(filename)); // Ask the user for the name then store it in filename
 
   size_t len = strlen(filename); // get the length of filename
-  if (len > 0 &&
-      filename[len - 1] ==
-          '/') { // checking if the user ended it with / if yes create a folder
-    struct stat st = {0};
-    if (stat(filename, &st) == -1) {
-      status_message("Created folder %s", filename); // Show a success message
-      filename[len - 1] = '\0'; // end the string with the null terminator
-      mkdir(filename, 0700);    // make the folder
-      freeitems(items, *count); // free old items
-      *count = loaddirectory(
-          ".", items); // load the new directory and allocate new items
+  if (len > 0 && filename[len - 1] == '/') {
+    filename[len - 1] = '\0';
+    if (mkdir_p(filename, 0700) == 0) {
+      status_message("Created folder %s", filename);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
       if (selected >= *count) {
         selected = *count - 1;
       }
       if (selected < 0) {
         selected = 0;
       }
-
     } else {
-      status_message("Folder %s already exists", filename); // show fail message
+      status_message("Failed to create folder %s", filename);
     }
   } else {
     if (file_exists(filename)) { // if the folder/file exists
