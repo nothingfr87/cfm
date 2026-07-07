@@ -1,5 +1,6 @@
 #include "ui.h"
 #include "functions.h"
+#include "tui_functions.h"
 #include <dirent.h>
 #include <ncurses.h>
 #include <stdio.h>
@@ -8,6 +9,10 @@
 #include <unistd.h>
 
 #define DIR_COLOR 1
+#define HEADER_HEIGHT 2
+#define FOOTER_HEIGHT 1
+#define CONTENT_START HEADER_HEIGHT
+#define CONTENT_END (LINES - FOOTER_HEIGHT)
 
 void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
   initscr();
@@ -29,21 +34,24 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
 
   while (1) {
     clear();
-    for (int i = 0; i < count; i++) {
-      if (i == selected) {
+    for (int i = 0; i < count && CONTENT_START + i < CONTENT_END; i++) {
+      int row = CONTENT_START + i;
+      if (i == selected)
         attron(A_REVERSE);
-      }
       if (isDir(items[i])) {
         attron(COLOR_PAIR(DIR_COLOR));
-        mvprintw(i, 0, "%s/", items[i]);
-        attroff(COLOR_PAIR(1));
+        mvprintw(row, 0, "%s/", items[i]);
+        attroff(COLOR_PAIR(DIR_COLOR));
       } else {
-        mvprintw(i, 0, "%s", items[i]);
+        mvprintw(row, 0, "%s", items[i]);
       }
-      if (i == selected) {
+      if (i == selected)
         attroff(A_REVERSE);
-      }
     }
+
+    topbar();
+    file_details(items, selected);
+
     refresh();
 
     ch = getch();
@@ -90,7 +98,6 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
       goto end;
     }
   }
-
 end:
   endwin();
 }

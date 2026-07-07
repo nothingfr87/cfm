@@ -1,6 +1,6 @@
 CFLAGS = $(shell pkg-config --cflags --libs ncursesw)
 CC = gcc
-FILES = src/main.c src/ui.c src/functions.c
+FILES = src/main.c src/ui.c src/functions.c src/tui_functions.c
 BIN = cfm
 
 all: clean build

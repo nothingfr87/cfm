@@ -3,7 +3,6 @@
 #include <dirent.h>
 #include <stdbool.h>
 
-void status_message(const char *message, ...);
 int is_text_file(const char *filename);
 bool file_exists(const char *filename);
 void create_folder_file(char *items[], int selected, int *count);

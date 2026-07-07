@@ -2,10 +2,19 @@
 
 New Features to add in CFM
 
-- [x] Creating Files/Folders
-- [x] Deleting Files/Folders
-- [x] Renaming Files
+## Basics:
+
+- [x] Creating Files/Folders ✅ 4/7/2026
+- [x] Deleting Files/Folders ✅ 5/7/2026
+- [x] Renaming Files ✅ 5/7/2026
 - [ ] Creating Nested Folders
+
+## TUI:
+
+- [x] Show File Permissions in Statusbar ✅ 7/7/2026
+- [x] Show Current Directory in Topbar ✅ 7/7/2026
+- [ ] Show Preview of a text/image file on the side
+
+## Fixing Bugs:
+
 - [ ] Fix Deleting Folders That have files in it
-- [ ] Show File Permissions in Statusbar
-- [ ] Show Current Directory in Topbar
