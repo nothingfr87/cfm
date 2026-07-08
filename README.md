@@ -14,6 +14,8 @@ CFM is a simple TUI file manager fully written in C focusing on performance, and
 
 ![preview](cfm-preview.gif)
 
+it supports renaming folders and files but I forgot to feature that 😅
+
 ---
 
 ## It's lightweight, I swear
@@ -43,6 +45,7 @@ And just like any file manager:
     - q/Escape: Exit
     - a: Create a new file/folder
     - d: Delete a file/folder
+    - r: Rename a file/folder
     - Left Arrow/Enter: Enter a folder or open a file
     - Right Arrow: Go back
 
