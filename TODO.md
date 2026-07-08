@@ -13,7 +13,7 @@ New Features to add in CFM
 
 - [x] Show File Permissions in Statusbar ✅ 7/7/2026
 - [x] Show Current Directory in Topbar ✅ 7/7/2026
-- [ ] Show Preview of a text/image file on the side
+- [x] Show Preview of the file on the side
 
 ## Fixing Bugs:
 

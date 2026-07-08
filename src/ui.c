@@ -50,6 +50,7 @@ void create_ui(int ch, char *items[], int count, int selected) {
 
     topbar();
     file_details(items, selected);
+    preview_file(items, selected);
 
     refresh();
 

@@ -9,6 +9,7 @@ void create_folder_file(char *items[], int selected, int *count);
 void rename_file(char *items[], int selected, int *count);
 void delfile(char *items[], int selected, int *count, int ch);
 void open_file(const char *filename);
+void preview_file(char *items[], int selected);
 int goback(char **items, int selected, int *count);
 int changedirectory(char *items[], int selected, int *count);
 

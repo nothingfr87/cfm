@@ -24,7 +24,7 @@ int is_text_file(const char *filename) {
     }
     if (buffer[i] < 32 && buffer[i] != '\t' && buffer[i] != '\n' &&
         buffer[i] != '\r') {
-      return 0;
+      return 2;
     }
   }
   return 1;

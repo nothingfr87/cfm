@@ -9,6 +9,8 @@
 #include <unistd.h>
 
 #define STATUS_CORDS LINES - 2
+#define SIDEBAR_WIDTH COLS / 3
+#define PREVIEW_MARGIN 4
 
 void create_folder_file(char *items[], int selected, int *count) {
   FILE *temp_file = NULL;
@@ -133,6 +135,46 @@ void open_file(const char *filename) {
       _exit(EXIT_FAILURE);
     }
   }
+}
+
+void preview_file(char *items[], int selected) {
+  char buffer[BUFFER_SIZE];
+  char command[BUFFER_SIZE];
+  int y_level = 3;
+  int x_level = SIDEBAR_WIDTH + PREVIEW_MARGIN;
+
+  mvvline(0, SIDEBAR_WIDTH, ACS_VLINE, LINES);
+
+  int preview_width = COLS - x_level - 10;
+
+  mvprintw(1, x_level, "Previewing File: %s", items[selected]);
+  mvhline(2, SIDEBAR_WIDTH, ACS_HLINE, COLS);
+
+  if (is_dir(items[selected])) {
+    mvprintw(y_level++, x_level, "No Preview: Folder");
+    return;
+  }
+
+  switch (is_text_file(items[selected])) {
+  case 2:
+    mvprintw(y_level++, x_level, "No Preview: Binary File");
+    return;
+    break;
+  case 0:
+    mvprintw(y_level++, x_level, "No Preview: Media File (Audio/Video/Image)");
+    return;
+    break;
+  }
+
+  snprintf(command, sizeof(command), "cat \"%s\" 2>/dev/null", items[selected]);
+  FILE *tmp = popen(command, "r");
+
+  while (fgets(buffer, sizeof(buffer), tmp)) {
+    mvaddnstr(y_level++, x_level, buffer, preview_width);
+  }
+
+  pclose(tmp);
+  refresh();
 }
 
 int goback(char **items, int selected, int *count) {
