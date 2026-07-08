@@ -10,6 +10,18 @@ CFM is a simple TUI file manager fully written in C focusing on performance, and
 
 ---
 
+## Take a Look!
+
+![preview](cfm-preview.gif)
+
+---
+
+## It's lightweight, I swear
+
+![usage](cfm-usage.png)
+
+---
+
 ## Requirements
 
 - Ncurses (TUI)
