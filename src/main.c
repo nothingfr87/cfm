@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 
   int ch;
 
-  create_ui(&dr, ch, items, count, selected);
+  create_ui(ch, items, count, selected);
 
   return 0;
 }

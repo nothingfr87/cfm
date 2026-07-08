@@ -1,91 +1,29 @@
 #include "functions.h"
+#include "helper_functions.h"
 #include "tui_functions.h"
-#include <dirent.h>
 #include <ncurses.h>
-#include <stdarg.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <unistd.h>
 
-// Define Constants
-#define BUFFER_SIZE 512
 #define STATUS_CORDS LINES - 2
 
-// Helper function to check whether a file is a text, a binary, or an image file
-int is_text_file(const char *filename) {
-  FILE *file = fopen(filename, "rb");
-  if (file == NULL) {
-    return -1;
-  }
+void create_folder_file(char *items[], int selected, int *count) {
+  FILE *temp_file = NULL;
+  char filename[BUFFER_SIZE];
 
-  unsigned char buffer[BUFFER_SIZE]; // Defining buffer for the *file to read to
-  size_t bytes_read =
-      fread(buffer, 1, sizeof(buffer), file); // Reads the file content
-  fclose(file);
+  mvprintw(STATUS_CORDS, 0, "Filename (end with '/' for folder): ");
+  getnstr(filename, sizeof(filename));
 
-  for (size_t i = 0; i < bytes_read; i++) {
-    if (buffer[i] == '\0') { // check whether there is a NUL (0x00), if yes file
-                             // is likely a binary
-      return 0;
-    }
-    if (buffer[i] < 32 && buffer[i] != '\t' && buffer[i] != '\n' &&
-        buffer[i] != '\r') { // check for non-printable ascii control characters
-      return 0;
-    }
-  }
-  return 1;
-}
+  size_t len = strlen(filename);
 
-// Helper function to check whether a file already exists or no
-bool file_exists(const char *filename) {
-  FILE *fp = fopen(filename, "r");
-  bool is_exist = false;
-  if (fp != NULL) {
-    is_exist = true;
-    fclose(fp);
-  }
-  return is_exist;
-}
-
-// Rename file/folder
-void rename_file(char *items[], int selected, int *count) {
-  char filename[256];
-  mvprintw(LINES - 2, 0, "New Name: ");
-  getnstr(filename, sizeof(filename)); // ask the user for the new name for the
-                                       // selected file/folder
-  if (rename(items[selected],
-             filename)) { // check if the rename function was done properly
-    status_message("Renamed %s to %s", items[selected],
-                   filename); // show success message
-    freeitems(items, *count); // free old items
-    *count =
-        loaddirectory(".", items); // load new direcotry and allocate new items
-    if (selected >= *count) {
-      selected = *count - 1;
-    }
-    if (selected < 0) {
-      selected = 0;
-    }
-  } else {
-    status_message("Failed to rename %s", items[selected]); // show fail message
-  }
-}
-
-// Deleting file/folder
-void delfile(char *items[], int selected, int *count, int ch) {
-  mvprintw(STATUS_CORDS, 0, "Processed? [y/n]");
-  ch = getch(); // take the user input for a character
-
-  if (ch == 'y') { // if y (yes)
-    if (remove(items[selected]) ==
-        0) { // check if the rename function was done properly
-      status_message("Deleted %s", items[selected]); // show success message
-      freeitems(items, *count);                      // free old items
-      *count = loaddirectory(
-          ".", items); // load new direcotry and allocate new items
+  if (len > 0 && filename[len - 1] == '/') {
+    filename[len - 1] = '\0';
+    if (mkdir_p(filename, 0700) == 0) {
+      status_message("Created folder %s", filename);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
       if (selected >= *count) {
         selected = *count - 1;
       }
@@ -93,15 +31,74 @@ void delfile(char *items[], int selected, int *count, int ch) {
         selected = 0;
       }
     } else {
-      status_message("Failed to Delete %s",
-                     items[selected]); // show fail message
+      status_message("Failed to create folder %s", filename);
     }
   } else {
-    status_message("Abort"); // if the user pressed any key except for y/n
+    if (file_exists(filename)) {
+      status_message("File %s already exists", filename);
+      if (temp_file)
+        fclose(temp_file);
+      return;
+    }
+    temp_file = fopen(filename, "w");
+
+    if (temp_file) {
+      status_message("Created %s", filename);
+      fclose(temp_file);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
+      if (selected >= *count) {
+        selected = *count - 1;
+      }
+      if (selected < 0) {
+        selected = 0;
+      }
+    }
   }
 }
 
-// Open a file
+void rename_file(char *items[], int selected, int *count) {
+  char filename[256];
+  mvprintw(LINES - 2, 0, "New Name: ");
+  getnstr(filename, sizeof(filename));
+  if (rename(items[selected], filename) == 0) {
+    status_message("Renamed %s to %s", items[selected], filename);
+    freeitems(items, *count);
+    *count = loaddirectory(".", items);
+    if (selected >= *count) {
+      selected = *count - 1;
+    }
+    if (selected < 0) {
+      selected = 0;
+    }
+  } else {
+    status_message("Failed to rename %s", items[selected]);
+  }
+}
+
+void delfile(char *items[], int selected, int *count, int ch) {
+  mvprintw(STATUS_CORDS, 0, "Processed? [y/n]");
+  ch = getch();
+
+  if (ch == 'y') {
+    if (rmdir_p(items[selected]) == 0) {
+      status_message("Deleted %s", items[selected]);
+      freeitems(items, *count);
+      *count = loaddirectory(".", items);
+      if (selected >= *count) {
+        selected = *count - 1;
+      }
+      if (selected < 0) {
+        selected = 0;
+      }
+    } else {
+      status_message("Failed to Delete %s", items[selected]);
+    }
+  } else {
+    status_message("Abort");
+  }
+}
+
 void open_file(const char *filename) {
   char command[BUFFER_SIZE];
 
@@ -137,73 +134,25 @@ void open_file(const char *filename) {
   system(command);
 }
 
-// Helper function to check whether a file is a folder
-int isDir(const char *path) {
-  struct stat path_stat;
-
-  if (stat(path, &path_stat) != 0) {
-    fprintf(stderr, "File Does Not Exist.\n");
-    return 1;
-  }
-
-  return S_ISDIR(path_stat.st_mode);
-}
-
-// Helper function to free old items
-void freeitems(char **items, int count) {
-  for (int i = 0; i < count; i++) {
-    free(items[i]);
-    items[i] = NULL;
-  }
-}
-
-// Helper function to load the new direcotry and allocate new items
-int loaddirectory(const char *path, char **items) {
-  DIR *dr = opendir(path);
-  if (dr == NULL) {
-    perror("Error Occured");
-    return -1;
-  }
-  struct dirent *in_file;
-  int count = 0;
-
-  while ((in_file = readdir(dr))) {
-    struct stat buffer;
-
-    if (in_file->d_name[0] == '.') {
-      continue;
-    }
-    items[count++] = strdup(in_file->d_name);
-  }
-
-  closedir(dr);
-  return count;
-}
-
-// Go back after entering a folder
 int goback(char **items, int selected, int *count) {
   if (chdir("..") == -1) {
     perror("Error Occured");
     return -1;
   }
-  freeitems(items, *count); // free old items
-  *count =
-      loaddirectory(".", items); // load new direcotry and allocate new items
+  freeitems(items, *count);
+  *count = loaddirectory(".", items);
   return 1;
 }
 
-// Helper function to change direcotries
 int changedirectory(char **items, int selected, int *count) {
-  if (!isDir(items[selected])) { // if the selected item isn't a folder return 0
-                                 // (false)
+  if (!is_dir(items[selected])) {
     return 0;
   }
-  if (chdir(items[selected]) == -1) { // if changing direcotry failed
-    perror("Error Occured");          // show fail message
+  if (chdir(items[selected]) == -1) {
+    perror("Error Occured");
     return -1;
   }
-  freeitems(items, *count); // free old items
-  *count =
-      loaddirectory(".", items); // load new direcotry and allocate new items
+  freeitems(items, *count);
+  *count = loaddirectory(".", items);
   return 1;
 }

@@ -1,12 +1,11 @@
 #include "ui.h"
 #include "functions.h"
+#include "helper_functions.h"
 #include "tui_functions.h"
 #include <dirent.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
 #define DIR_COLOR 1
 #define HEADER_HEIGHT 2
@@ -14,8 +13,7 @@
 #define CONTENT_START HEADER_HEIGHT
 #define CONTENT_END (LINES - FOOTER_HEIGHT)
 
-void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
-  // Ncurses initialization
+void create_ui(int ch, char *items[], int count, int selected) {
   initscr();
   echo();
   cbreak();
@@ -23,7 +21,7 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
   timeout(-1);
   keypad(stdscr, TRUE);
 
-  if (has_colors() == FALSE) { // check if the terminal support colors
+  if (has_colors() == FALSE) {
     endwin();
     printf("Your terminal does not support color\n");
     exit(1);
@@ -35,30 +33,27 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
 
   while (1) {
     clear();
-    for (int i = 0; i < count && CONTENT_START + i < CONTENT_END;
-         i++) { // iterate through the items to display them
+    for (int i = 0; i < count && CONTENT_START + i < CONTENT_END; i++) {
       int row = CONTENT_START + i;
-      if (i == selected) // if the item is selected highlight it
+      if (i == selected)
         attron(A_REVERSE);
-      if (isDir(items[i])) { // if a file is a folder then color it with a
-                             // special color
+      if (is_dir(items[i])) {
         attron(COLOR_PAIR(DIR_COLOR));
-        mvprintw(row, 0, "%s/",
-                 items[i]); // print the name of the folder with a / next to it
-        attroff(COLOR_PAIR(DIR_COLOR)); // turning off the coloring
-      } else {                          // if it's a file print it normally
+        mvprintw(row, 0, "%s/", items[i]);
+        attroff(COLOR_PAIR(DIR_COLOR));
+      } else {
         mvprintw(row, 0, "%s", items[i]);
       }
       if (i == selected)
         attroff(A_REVERSE);
     }
 
-    topbar();                      // show topbar
-    file_details(items, selected); // show statusbar
+    topbar();
+    file_details(items, selected);
 
     refresh();
 
-    ch = getch(); // get user key presses
+    ch = getch();
     switch (ch) {
     case KEY_UP:
       if (selected > 0)
@@ -72,7 +67,7 @@ void create_ui(DIR **dr, int ch, char *items[], int count, int selected) {
 
     case '\n':
     case KEY_RIGHT:
-      if (isDir(items[selected])) {
+      if (is_dir(items[selected])) {
         if (changedirectory(items, selected, &count))
           selected = 0;
       } else {
