@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define STATUS_CORDS LINES - 2
@@ -100,38 +101,38 @@ void delfile(char *items[], int selected, int *count, int ch) {
 }
 
 void open_file(const char *filename) {
-  char command[BUFFER_SIZE];
+  char *editor = getenv("EDITOR");
+  if (!editor || !*editor)
+    editor = "nano";
 
   if (is_text_file(filename)) {
-#if defined(_WIN32) || defined(_WIN64)
-    snprintf(command, BUFFER_SIZE, "notepad \"%s\"", filename);
+    def_prog_mode();
+    endwin();
 
-#elif defined(__APPLE__)
-    snprintf(command, BUFFER_SIZE, "open -a TextEdit \"%s\"", filename);
+    pid_t pid = fork();
 
-#elif defined(__linux__)
-    snprintf(command, BUFFER_SIZE, "nano \"%s\"", filename);
+    if (pid == 0) {
+      execlp(editor, editor, filename, (char *)NULL);
+      perror("execlp");
+      _exit(EXIT_FAILURE);
+    } else if (pid > 0) {
+      waitpid(pid, NULL, 0);
 
-#else
-#error "Unsupported operating system"
-#endif
+      reset_prog_mode();
+      refresh();
+      clear();
+    } else {
+      perror("fork");
+    }
+
   } else {
-#if defined(_WIN32) || defined(_WIN64)
-    snprintf(command, BUFFER_SIZE, "start \"\" \"%s\" > nul 2>&1", filename);
-
-#elif defined(__APPLE__)
-    snprintf(command, BUFFER_SIZE, "open \"%s\" > /dev/null 2>&1", filename);
-
-#elif defined(__linux__)
-    snprintf(command, BUFFER_SIZE, "xdg-open \"%s\" > /dev/null 2>&1",
-             filename);
-
-#else
-#error "Unsupported operating system"
-#endif
+    pid_t pid = fork();
+    if (pid == 0) {
+      execlp("xdg-open", "xdg-open", filename, (char *)NULL);
+      perror("xdg-open");
+      _exit(EXIT_FAILURE);
+    }
   }
-
-  system(command);
 }
 
 int goback(char **items, int selected, int *count) {

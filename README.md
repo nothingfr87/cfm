@@ -86,8 +86,6 @@ On Windows, I don't know how to install binaries so you'll have to build the sou
 CFM Supports:
 
 - Linux (Tested on Debian 13 Trixie)
-- MacOS (Not Tested)
-- Windows (Not Tested)
 
 ---
 
