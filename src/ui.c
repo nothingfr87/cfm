@@ -3,9 +3,11 @@
 #include "helper_functions.h"
 #include "tui_functions.h"
 #include <dirent.h>
+#include <locale.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <wchar.h>
 
 #define DIR_COLOR 1
 #define HEADER_HEIGHT 2
@@ -14,6 +16,7 @@
 #define CONTENT_END (LINES - FOOTER_HEIGHT)
 
 void create_ui(int ch, char *items[], int count, int selected) {
+  setlocale(LC_ALL, "");
   initscr();
   echo();
   cbreak();
@@ -39,10 +42,12 @@ void create_ui(int ch, char *items[], int count, int selected) {
         attron(A_REVERSE);
       if (is_dir(items[i])) {
         attron(COLOR_PAIR(DIR_COLOR));
-        mvprintw(row, 0, "%s/", items[i]);
+        const wchar_t *icon = file_icons(items[i]);
+        mvprintw(row, 0, "%ls  %s/", icon, items[i]);
         attroff(COLOR_PAIR(DIR_COLOR));
       } else {
-        mvprintw(row, 0, "%s", items[i]);
+        const wchar_t *icon = file_icons(items[i]);
+        mvprintw(row, 0, "%ls  %s", icon, items[i]);
       }
       if (i == selected)
         attroff(A_REVERSE);

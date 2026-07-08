@@ -1,25 +1,19 @@
 #include "tui_functions.h"
 #include "functions.h"
+#include "helper_functions.h"
+#include <locale.h>
 #include <ncurses.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <wchar.h>
 
 #define STATUS_CORDS LINES - 2
 #define TOP_BAR_ROW 0
 
-void human_size(off_t bytes, char *buf, size_t size) {
-  const char *units[] = {"B", "KB", "MB", "GB", "TB", "PB"};
-  double value = (double)bytes;
-  int unit = 0;
-
-  while (value >= 1024.0 && unit < 5) {
-    value /= 1024.0;
-    unit++;
-  }
-
-  snprintf(buf, size, "%.1f%s", value, units[unit]);
-}
+static const char *exts[] = {"c", "h", "py", "txt", "md", "pdf", "zip", "tar"};
+static const wchar_t *icons[] = {L"\ue61e", L"\ue61e", L"\ue73c", L"\uf15c",
+                                 L"\uf15c", L"\uf1c1", L"\uf40b", L"\uf40b"};
 
 void status_message(const char *message, ...) {
   va_list args;
@@ -37,6 +31,26 @@ void status_message(const char *message, ...) {
   move(STATUS_CORDS, 0);
   clrtoeol();
   refresh();
+}
+
+const wchar_t *file_icons(const char *filename) {
+  if (is_dir(filename)) {
+    return L"\uf07b";
+  }
+
+  const char *ext = strchr(filename, '.');
+  if (!ext)
+    return L"\uf15b";
+
+  ext++;
+
+  for (int i = 0; i < sizeof(exts) / sizeof(exts[i]); i++) {
+    if (strcmp(ext, exts[i]) == 0) {
+      return icons[i];
+    }
+  }
+
+  return L"\uf15b";
 }
 
 void permissions_to_string(mode_t mode, char *perm) {

@@ -8,6 +8,19 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+void human_size(off_t bytes, char *buf, size_t size) {
+  const char *units[] = {"B", "KB", "MB", "GB", "TB", "PB"};
+  double value = (double)bytes;
+  int unit = 0;
+
+  while (value >= 1024.0 && unit < 5) {
+    value /= 1024.0;
+    unit++;
+  }
+
+  snprintf(buf, size, "%.1f%s", value, units[unit]);
+}
+
 int is_text_file(const char *filename) {
   FILE *file = fopen(filename, "rb");
   if (file == NULL) {

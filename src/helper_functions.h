@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+void human_size(off_t bytes, char *buf, size_t size);
 int is_text_file(const char *filename);
 bool file_exists(const char *filename);
 int is_dir(const char *path);
