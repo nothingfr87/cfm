@@ -31,13 +31,8 @@ int is_text_file(const char *filename) {
 }
 
 bool file_exists(const char *filename) {
-  FILE *fp = fopen(filename, "r");
-  bool is_exist = false;
-  if (fp != NULL) {
-    is_exist = true;
-    fclose(fp);
-  }
-  return is_exist;
+  struct stat st;
+  return stat(filename, &st) == 0;
 }
 
 int is_dir(const char *path) {
