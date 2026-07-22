@@ -28,6 +28,7 @@ it supports renaming folders and files but I forgot to feature that 😅
 
 - Ncurses (TUI)
 - GCC (Compiler)
+- pkg-config
 
 ---
 
@@ -59,20 +60,20 @@ Before that let's install the required libraries
 
 ```bash
 sudo apt update
-sudo apt install build-essentials  libncurses5-dev libncursesw5-dev
+sudo apt install build-essentials pkg-config libncurses5-dev libncursesw5-dev
 ```
 
 #### Fedora Distros
 
 ```bash
 sudo dnf groupinstall "Development Tools"
-sudo dnf install ncurses-devel
+sudo dnf install ncurses-devel pkgconf-pkg-config
 ```
 
 #### Arch Distros
 
 ```bash
-sudo pacman -S base-devel ncurses
+sudo pacman -S base-devel ncurses pkgconf
 ```
 
 Clone the repo , and build the source code

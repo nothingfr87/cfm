@@ -10,6 +10,10 @@ install: build
 	sudo mv $(BIN) /usr/local/bin/
 
 build:
+	ifeq ($(shell which pkg-config 2>/dev/null),)
+			$(error "pkg-config is not installed. Please install 'pkg-config' using your package manager.")
+	endif
+
 	$(CC) -o $(BIN) $(FILES) $(CFLAGS)
 
 clean:

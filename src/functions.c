@@ -1,16 +1,19 @@
 #include "functions.h"
 #include "helper_functions.h"
 #include "tui_functions.h"
+#include <dirent.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #define STATUS_CORDS LINES - 2
 #define SIDEBAR_WIDTH COLS / 3
 #define PREVIEW_MARGIN 4
+#define FOLDER_FILES_COLOR 2
 
 void create_folder_file(char *items[], int selected, int *count) {
   FILE *temp_file = NULL;
@@ -143,6 +146,10 @@ void preview_file(char *items[], int selected) {
   int y_level = 3;
   int x_level = SIDEBAR_WIDTH + PREVIEW_MARGIN;
 
+  start_color();
+  use_default_colors();
+  init_pair(FOLDER_FILES_COLOR, COLOR_GREEN, -1);
+
   mvvline(0, SIDEBAR_WIDTH, ACS_VLINE, LINES);
 
   int preview_width = COLS - x_level - 10;
@@ -150,8 +157,25 @@ void preview_file(char *items[], int selected) {
   mvprintw(1, x_level, "Previewing File: %s", items[selected]);
   mvhline(2, SIDEBAR_WIDTH, ACS_HLINE, COLS);
 
+  DIR *dir = opendir(items[selected]);
+
   if (is_dir(items[selected])) {
-    mvprintw(y_level++, x_level, "No Preview: Folder");
+    DIR *dir = opendir(items[selected]);
+    if (!dir) {
+      mvprintw(y_level++, x_level, "Cannot open directory");
+      return;
+    }
+    struct dirent *entry;
+    while ((entry = readdir(dir))) {
+      if (entry->d_name[0] == '.')
+        continue;
+      attron(COLOR_PAIR(FOLDER_FILES_COLOR));
+      mvprintw(y_level++, x_level, "%s", entry->d_name);
+      if (y_level >= LINES - 2)
+        break;
+    }
+    closedir(dir);
+    attroff(COLOR_PAIR(FOLDER_FILES_COLOR));
     return;
   }
 
