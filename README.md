@@ -56,6 +56,12 @@ And just like any file manager:
 
 Installing CFM is very easy
 
+```bash
+curl https://raw.githubusercontent.com/nothingfr87/cfm/refs/heads/main/install.sh | sh
+```
+
+You can instead install it yourself
+
 Before that let's install the required libraries
 
 ```bash
