@@ -22,7 +22,7 @@ printf "\n"
 printf "\n"
 printf "\n"
 printf "Do you want to install CFM? (y/n): "
-read -r choice
+read -r choice < /dev/tty
 
 if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
   echo "Checking Dependencies"
