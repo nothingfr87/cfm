@@ -148,4 +148,10 @@ If CFM does not fit your workflow, you may also be interested in these excellent
 
 ---
 
+## Special Thanks
+
+Special Thanks to [rida-hdj](https://github.com/rida-hdj) for making our CFM Logo!
+
+---
+
 If you find CFM useful, consider starring the repository to support its development.
