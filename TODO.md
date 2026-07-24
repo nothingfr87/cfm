@@ -13,8 +13,9 @@ New Features to add in CFM
 
 - [x] Show File Permissions in Statusbar ✅ 7/7/2026
 - [x] Show Current Directory in Topbar ✅ 7/7/2026
-- [x] Show Preview of the file on the side
+- [x] Show Preview of the file on the side ✅ 7/7/2026
+- [ ] Show Preview of images on the side
 
 ## Fixing Bugs:
 
-- [x] Fix Deleting Folders That have files in it ✅ 8/7/2026
+- [x] Fix Deleting Nested Folders ✅ 8/7/2026
