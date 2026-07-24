@@ -1,16 +1,28 @@
-# CFM
+<p align="center">
+  <img src="assets/icon.png" width="180">
+</p>
 
-C File Manager is just a simple file manager
+<h1 align="center">CFM</h1>
 
----
+<p align="center">
+A lightweight terminal file manager written in C.
+</p>
 
-![LOGO By rida-hdj](assets/icon.png)
+<p align="center">
+Focused on performance, low resource usage, and keyboard-driven navigation.
+</p>
 
-> logo by [rida-hdj](https://github.com/rida-hdj)
+<p align="center">
 
-## Description
+![License](https://img.shields.io/github/license/nothingfr87/cfm)
+![Stars](https://img.shields.io/github/stars/nothingfr87/cfm)
+![Platform](https://img.shields.io/badge/Linux%2013-blue)
 
-CFM is a simple TUI file manager fully written in C focusing on performance, and memory & cpu usage
+</p>
+
+## Project 
+
+CFM is a lightweight terminal file manager written entirely in C. It is designed with a strong focus on performance, low memory consumption, and minimal CPU usage while providing an efficient keyboard-driven workflow.
 
 ---
 
@@ -30,23 +42,28 @@ it supports renaming folders and files but I forgot to feature that 😅
 
 ## Requirements
 
-- Ncurses (TUI)
-- GCC (Compiler)
+- Ncurses
+- GCC
 - pkg-config
 
 ---
 
 ## Features
 
-- Lightweight
+- Lightweight and efficient
+- Low memory usage
+- Keyboard-driven interface
+- Fast startup
 
-And just like any file manager:
+Core functionality includes:
 
-- Open Files/Folders
-- Create Files/Folders
-- Delete Files/Folders
+- Browse directories
+- Open files
+- Create files and directories
+- Delete files and directories
+- Rename files and directories
 
-- Focused on keyboard keybinds which makes it faster to use
+- Optimized for keyboard navigation to maximize productivity.
     - q/Escape: Exit
     - a: Create a new file/folder
     - d: Delete a file/folder
@@ -58,13 +75,13 @@ And just like any file manager:
 
 ## Installation
 
-Installing CFM is very easy
+You can install CFM using the provided installation script:
 
 ```bash
 curl https://raw.githubusercontent.com/nothingfr87/cfm/refs/heads/main/install.sh | sh
 ```
 
-You can instead install it yourself
+Alternatively, you can build CFM from source.
 
 Before that let's install the required libraries
 
@@ -86,7 +103,7 @@ sudo dnf install ncurses-devel pkgconf-pkg-config
 sudo pacman -S base-devel ncurses pkgconf
 ```
 
-Clone the repo , and build the source code
+Clone the repository and build the project:
 
 ```bash
 git clone https://github.com/nothingfr87/cfm.git
@@ -95,29 +112,28 @@ cd cfm/
 make build
 ```
 
-Now you have the binary you can do anything you want with it!
+The compiled binary will now be available in the project directory.
 
-To install CFM on your PC
+To install CFM system-wide:
 
 ```bash
 sudo make all install
 ```
 
-On Windows, I don't know how to install binaries so you'll have to build the source code then move the binary file to a safe place then add that folder to your PATH environment
-
 ---
 
 ## Supported OS:
 
-CFM Supports:
+Currently supported:
 
 - Linux (Tested on Debian 13 Trixie)
+- MacOS (Not Tested)
 
 ---
 
 ## Issues:
 
-Please consider reporting in [Issues](https://github.com/nothingfr87/cfm/issues) if you faced any problems, to help this project get better and better
+If you encounter any bugs or unexpected behavior, please open an issue. Feedback and contributions are always appreciated.
 
 ---
 
@@ -129,9 +145,7 @@ This project is licensed under the [MIT License](LICENSE)
 
 ### Other Projects:
 
-If you don't like CFM, I am sorry I'll try to make it better!
-
-But for now here some other projects that you would like, these projects inspired me to make this!
+If CFM does not fit your workflow, you may also be interested in these excellent terminal file managers that inspired this project:
 
 - [Yazi](https://yazi-rs.github.io/)
 - [NNN](https://github.com/jarun/nnn)
@@ -139,4 +153,4 @@ But for now here some other projects that you would like, these projects inspire
 
 ---
 
-Please consider giving a star if you liked the project, it would be great :)
+If you find CFM useful, consider starring the repository to support its development.
