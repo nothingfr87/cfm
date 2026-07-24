@@ -1,23 +1,20 @@
 <p align="center">
-  <img src="assets/icon.png" width="180">
+      <img src="assets/icon.png" width="180">
 </p>
 
 <h1 align="center">CFM</h1>
 
 <p align="center">
-A lightweight terminal file manager written in C.
+    A lightweight terminal file manager written in C.
 </p>
 
 <p align="center">
-Focused on performance, low resource usage, and keyboard-driven navigation.
+    Focused on performance, low resource usage, and keyboard-driven navigation.
 </p>
 
 <p align="center">
-
-![License](https://img.shields.io/github/license/nothingfr87/cfm)
-![Stars](https://img.shields.io/github/stars/nothingfr87/cfm)
-![Platform](https://img.shields.io/badge/Linux%2013-blue)
-
+  <img src="https://img.shields.io/github/license/nothingfr87/cfm?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/github/stars/nothingfr87/cfm?style=for-the-badge" alt="GitHub Stars">
 </p>
 
 ## Project 
@@ -29,8 +26,6 @@ CFM is a lightweight terminal file manager written entirely in C. It is designed
 ## Take a Look!
 
 ![preview](assets/cfm-preview.gif)
-
-it supports renaming folders and files but I forgot to feature that 😅
 
 ---
 
