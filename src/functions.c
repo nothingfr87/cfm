@@ -19,7 +19,11 @@ void create_folder_file(char *items[], int selected, int *count) {
   FILE *temp_file = NULL;
   char filename[BUFFER_SIZE];
 
+  mvhline(STATUS_CORDS, 0, ' ', COLS);
   mvprintw(STATUS_CORDS, 0, "Filename (end with '/' for folder): ");
+  move(STATUS_CORDS, strlen("Filename (end with '/' for folder): "));
+  refresh();
+
   getnstr(filename, sizeof(filename));
 
   size_t len = strlen(filename);
@@ -65,7 +69,12 @@ void create_folder_file(char *items[], int selected, int *count) {
 
 void rename_file(char *items[], int selected, int *count) {
   char filename[256];
-  mvprintw(LINES - 2, 0, "New Name: ");
+
+  mvhline(STATUS_CORDS, 0, ' ', COLS);
+  mvprintw(STATUS_CORDS, 0, "New Name: ");
+  move(STATUS_CORDS, strlen("New Name: "));
+  refresh();
+
   getnstr(filename, sizeof(filename));
   if (rename(items[selected], filename) == 0) {
     status_message("Renamed %s to %s", items[selected], filename);
@@ -83,7 +92,9 @@ void rename_file(char *items[], int selected, int *count) {
 }
 
 void delfile(char *items[], int selected, int *count, int ch) {
-  mvprintw(STATUS_CORDS, 0, "Processed? [y/n]");
+  mvhline(STATUS_CORDS, 0, ' ', COLS);
+  mvprintw(STATUS_CORDS, 0, "Delete '%s'? [y/N] ", items[selected]);
+  refresh();
   ch = getch();
 
   if (ch == 'y') {

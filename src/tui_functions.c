@@ -89,9 +89,8 @@ void file_details(char *items[], int selected) {
   char perms[11];
   human_size(file_st.st_size, size_str, sizeof(size_str));
   permissions_to_string(file_st.st_mode, perms);
-  clrtoeol();
+  mvhline(STATUS_CORDS, 0, ' ', COLS);
   mvprintw(STATUS_CORDS, 0, "%s %s %s", perms, size_str, items[selected]);
-  refresh();
 }
 
 void topbar() {
