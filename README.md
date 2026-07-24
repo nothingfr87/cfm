@@ -4,6 +4,10 @@ C File Manager is just a simple file manager
 
 ---
 
+![LOGO By rida-hdj](assets/icon.png)
+
+> logo by [rida-hdj](https://github.com/rida-hdj)
+
 ## Description
 
 CFM is a simple TUI file manager fully written in C focusing on performance, and memory & cpu usage
@@ -12,7 +16,7 @@ CFM is a simple TUI file manager fully written in C focusing on performance, and
 
 ## Take a Look!
 
-![preview](cfm-preview.gif)
+![preview](assets/cfm-preview.gif)
 
 it supports renaming folders and files but I forgot to feature that 😅
 
@@ -20,7 +24,7 @@ it supports renaming folders and files but I forgot to feature that 😅
 
 ## It's lightweight, I swear
 
-![usage](cfm-usage.png)
+![usage](assets/cfm-usage.png)
 
 ---
 
