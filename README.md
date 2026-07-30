@@ -50,6 +50,7 @@ CFM is a lightweight terminal file manager written entirely in C. It is designed
 - Low memory usage
 - Keyboard-driven interface
 - Fast startup
+- Image preview (Currently for kitty terminal only)
 
 Core functionality includes:
 
@@ -172,7 +173,11 @@ If CFM does not fit your workflow, you may also be interested in these excellent
 
 ## Special Thanks
 
-Special Thanks to [rida-hdj](https://github.com/rida-hdj) for making our CFM Logo!
+| [rida-hdj](https://github.com/rida-hdj) | making our CFM Logo |
+| --------- | ---------- |
+| [DEXTER](https://github.com/abod8639) | Adding image preview for kitty terminal |
+
+Special Thanks to [rida-hdj](https://github.com/rida-hdj) for making our CFM Lo
 
 ---
 
