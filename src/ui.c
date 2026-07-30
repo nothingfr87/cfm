@@ -2,6 +2,7 @@
 #include "functions.h"
 #include "helper_functions.h"
 #include "tui_functions.h"
+#include "image_preview.h"
 #include <dirent.h>
 #include <locale.h>
 #include <ncurses.h>
@@ -169,5 +170,6 @@ void create_ui(int ch, char *items[], int count, int selected, int scroll) {
     }
   }
 end:
+  clear_image_preview();
   endwin();
 }

@@ -1,6 +1,8 @@
 #include "functions.h"
 #include "helper_functions.h"
 #include "tui_functions.h"
+#include "image_preview.h"
+#include "syntax.h"
 #include <dirent.h>
 #include <linux/limits.h>
 #include <ncurses.h>
@@ -156,6 +158,10 @@ void open_file(const char *filename) {
 }
 
 void preview_file(char *items[], int selected) {
+  if (!items || !items[selected]) {
+    clear_image_preview();
+    return;
+  }
   if (!items || selected < 0 || !items[selected])
     return;
 
@@ -171,9 +177,21 @@ void preview_file(char *items[], int selected) {
   mvvline(0, SIDEBAR_WIDTH, ACS_VLINE, LINES);
 
   int preview_width = COLS - x_level - 10;
+  int preview_height = LINES - y_level - 2;
 
   mvprintw(1, x_level, "Previewing File: %s", items[selected]);
   mvhline(2, SIDEBAR_WIDTH, ACS_HLINE, COLS);
+
+  if (is_image_file(items[selected])) {
+    for (int i = 0; i < preview_height; i++) {
+      mvhline(y_level + i, x_level, ' ', COLS - x_level);
+    }
+    refresh();
+    draw_image_preview(items[selected], x_level, y_level, preview_width, preview_height);
+    return;
+  } else {
+    clear_image_preview();
+  }
 
   if (is_dir(items[selected])) {
     DIR *dir = opendir(items[selected]);
@@ -206,14 +224,30 @@ void preview_file(char *items[], int selected) {
     break;
   }
 
-  snprintf(command, sizeof(command), "cat \"%s\" 2>/dev/null", items[selected]);
-  FILE *tmp = popen(command, "r");
-
-  while (fgets(buffer, sizeof(buffer), tmp)) {
-    mvaddnstr(y_level++, x_level, buffer, preview_width);
+  FILE *fp = fopen(items[selected], "r");
+  if (!fp) {
+    mvprintw(y_level++, x_level, "Error: Cannot open file");
+    return;
   }
 
-  pclose(tmp);
+  LangType lang = get_lang_type(items[selected]);
+  init_syntax_colors();
+
+  int in_multiline_comment = 0;
+  while (fgets(buffer, sizeof(buffer), fp) && y_level < LINES - 2) {
+    size_t len = strlen(buffer);
+    if (len > 0 && buffer[len - 1] == '\n') {
+      buffer[len - 1] = '\0';
+    }
+    
+    if (lang != LANG_NONE) {
+      print_highlighted_line(y_level++, x_level, buffer, preview_width, &in_multiline_comment, lang);
+    } else {
+      mvaddnstr(y_level++, x_level, buffer, preview_width);
+    }
+  }
+
+  fclose(fp);
   refresh();
 }
 
