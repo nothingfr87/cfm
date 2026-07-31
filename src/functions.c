@@ -1,8 +1,8 @@
 #include "functions.h"
 #include "helper_functions.h"
-#include "tui_functions.h"
 #include "image_preview.h"
 #include "syntax.h"
+#include "tui_functions.h"
 #include <dirent.h>
 #include <linux/limits.h>
 #include <ncurses.h>
@@ -187,7 +187,8 @@ void preview_file(char *items[], int selected) {
       mvhline(y_level + i, x_level, ' ', COLS - x_level);
     }
     refresh();
-    draw_image_preview(items[selected], x_level, y_level, preview_width, preview_height);
+    draw_image_preview(items[selected], x_level, y_level, preview_width,
+                       preview_height);
     return;
   } else {
     clear_image_preview();
@@ -239,9 +240,10 @@ void preview_file(char *items[], int selected) {
     if (len > 0 && buffer[len - 1] == '\n') {
       buffer[len - 1] = '\0';
     }
-    
+
     if (lang != LANG_NONE) {
-      print_highlighted_line(y_level++, x_level, buffer, preview_width, &in_multiline_comment, lang);
+      print_highlighted_line(y_level++, x_level, buffer, preview_width,
+                             &in_multiline_comment, lang);
     } else {
       mvaddnstr(y_level++, x_level, buffer, preview_width);
     }
